@@ -1,0 +1,180 @@
+JQuery Core
+
+1) jQuery() or $()
+	Searches through the DOM for any elements that match the provided selector and creates a new jQuery object that references these elements:
+
+		$('div.foo');
+
+	a) jQuery( selector, [ context ] )
+		Description: Accepts a string containing a CSS selector which is then used to match a set of elements.
+	
+		1) jQuery( selector, [ context ] )
+			where,
+				selector
+					A string containing a selector expression.
+				context
+					A DOM Element, Document, or jQuery to use as context.
+		2) jQuery( element )
+			where,
+				element
+					A DOM element to wrap in a jQuery object.
+		3) jQuery( elementArray )
+			where,
+				elementArray
+					An array containing a set of DOM elements to wrap in a jQuery object.
+		4) jQuery( jQuery object )
+			where,
+				jQuery object
+					An existing jQuery object to clone.
+		5) jQuery()
+
+	Selector Context
+		By default, selectors perform their searches within the DOM starting at the document root. However, an alternate context can be given for the search by using the optional second parameter to the $() function. For example, to do a search within an event handler, the search can be restricted like so:
+
+			$('div.foo').click(function() {
+			  $('span', this).addClass('bar');
+			});
+		When the search for the span selector is restricted to the context of this, only spans within the clicked element will get the additional class.
+		Internally, selector context is implemented with the .find() method, so $('span', this) is equivalent to $(this).find('span').
+
+	Using DOM elements
+		The second and third formulations of this function create a jQuery object using one or more DOM elements that were already selected in some other way. A common use of this facility is to call jQuery methods on an element that has been passed to a callback function through the keyword this:
+			
+			$('div.foo').click(function() {
+			  $(this).slideUp();
+			});
+
+		This example causes elements to be hidden with a sliding animation when clicked. Because the handler receives the clicked item in the this keyword as a bare DOM element, the element must be passed to the $() function before applying jQuery methods to it.
+		XML data returned from an Ajax call can be passed to the $() function so individual elements of the XML structure can be retrieved using .find() and other DOM traversal methods.
+		
+			$.post('url.xml', function(data) {
+			  var $child = $(data).find('child');
+			})
+
+	Cloning jQuery Objects
+		When a jQuery object is passed to the $() function, a clone of the object is created. This new jQuery object references the same DOM elements as the initial one.
+
+	Returning an Empty Set
+		As of jQuery 1.4, calling the jQuery() method with no arguments returns an empty jQuery set (with a .length property of 0). In previous versions of jQuery, this would return a set containing the document node.
+
+
+	Example: 
+
+	Find all p elements that are children of a div element and apply a border to them.
+	<!DOCTYPE html>
+	<html>
+	<head>
+	  <script src="http://code.jquery.com/jquery-1.5.js"></script>
+	</head>
+	<body>
+	  <p>one</p> <div><p>two</p></div> <p>three</p>
+	<script>
+	  $("div > p").css("border", "1px solid gray");
+	</script>
+	</body>
+	</html>
+
+	Find all inputs of type radio within the first form in the document.
+		$("input:radio", document.forms[0]);
+	
+	Find all div elements within an XML document from an Ajax response.
+		$("div", xml.responseXML);
+
+	Set the background color of the page to black.
+		$(document.body).css( "background", "black" );
+
+	Hide all the input elements within a form.
+		$(myForm.elements).hide()
+	
+	b) jQuery( html, [ ownerDocument ] )
+		Creates DOM elements on the fly from the provided string of raw HTML.
+
+		1) jQuery( html, [ ownerDocument ] )
+			html
+				A string of HTML to create on the fly. Note that this parses HTML, not XML.
+			ownerDocument
+				A document in which the new elements will be created
+
+		2) jQuery( html, props )
+			html
+				A string defining a single, standalone, HTML element (e.g. <div/> or <div></div>).
+			props
+				An map of attributes, events, and methods to call on the newly-created element.
+
+		Creating New Elements
+		If a string is passed as the parameter to $(), jQuery examines the string to see if it looks like HTML (i.e., it has <tag ... > somewhere within the string). If not, the string is interpreted as a selector expression, as explained above. But if the string appears to be an HTML snippet, jQuery attempts to create new DOM elements as described by the HTML. Then a jQuery object is created and returned that refers to these elements. You can perform any of the usual jQuery methods on this object:
+			$('<p id="test">My <em>new</em> text</p>').appendTo('body');
+		When the HTML is more complex than a single tag without attributes, as it is in the above example, the actual creation of the elements is handled by the browser's innerHTML mechanism. In most cases, jQuery creates a new <div> element and sets the innerHTML property of the element to the HTML snippet that was passed in. When the parameter has a single tag, such as $('<img />') or $('<a></a>'), jQuery creates the element using the native JavaScript createElement() function.
+
+		When passing in complex HTML, some browsers may not generate a DOM that exactly replicates the HTML source provided. For example, Internet Explorer prior to version 8 will convert all href properties on links to absolute URLs, and Internet Explorer prior to version 9 will not correctly handle HTML5 elements without the addition of a separate compatibility layer.
+
+		To ensure cross-platform compatibility, the snippet must be well-formed. Tags that can contain other elements should be paired with a closing tag:
+			$('<a href="http://jquery.com"></a>');
+		Alternatively, jQuery allows XML-like tag syntax (with or without a space before the slash):
+			$('<a/>');
+		Tags that cannot contain elements may be quick-closed or not:
+			$('<img />');
+			$('<input>');
+		As of jQuery 1.4, the second argument can accept a map consisting of a superset of the properties that can be passed to the .attr() method. Furthermore, any event type can be passed in, and the following jQuery methods can be called: 
+			val, 
+			css, 
+			html, 
+			text, 
+			data, 
+			width, 
+			height, 
+			offset. 
+		Note that Internet Explorer will not allow you to create an input or button element and change its type; you must specify the type using '<input type="checkbox" />' for example.
+
+			Example
+
+			Create a div element (and all of its contents) dynamically and append it to the body element. Internally, an element is created and its innerHTML property set to the given markup.
+				$("<div><p>Hello</p></div>").appendTo("body")
+
+			Create some DOM elements.
+				$("<div/>", {
+				  "class": "test",
+				  text: "Click me!",
+				  click: function(){
+				    $(this).toggleClass("test");
+				  }
+				}).appendTo("body");
+			
+	c) jQuery( callback )
+		Binds a function to be executed when the DOM has finished loading.
+		jQuery( callback )
+			callback
+				The function to execute when the DOM is ready.
+		This function behaves just like $(document).ready(), in that it should be used to wrap other $() operations on your page that depend on the DOM being ready. While this function is, technically, chainable, there really isn't much use for chaining against it.
+
+			Example
+			Execute the function when the DOM is ready to be used.
+				$(function(){
+				   // Document is ready
+				 });
+			Use both the shortcut for $(document).ready() and the argument to write failsafe jQuery code using the $ alias, without relying on the global alias.
+				jQuery(function($) {
+				    // Your code using failsafe $ alias here...
+				});
+				
+	Additional Features,
+		1) To add iFrame 
+			var myFrame=window.frames.myIframe;
+			if(!myFrame.contentDocument) { 
+				myFrame.contentDocument=myFrame.contentWindow.document;
+			}
+			$('div',myFrame.contentDocument); 
+		2) To add HTML Tags in JQuery
+			var html = "<ul><li>1</li><li>2</li></ul>";
+			var example = $(html, { "class": "pk_slider_clicker" });
+				That form of $ only works when the first argument is a simple tag, like $('<ul>', {...}). Use $('...bunch of html...').attr({"class": "pk_slider_clicker"}) instead.</ul> 
+				note : try not to use the reserved word 'html' 
+					.val, 
+					.css, 
+					.html, 
+					.text, 
+					.data, 
+					.width, 
+					.height,
+					.offset.
+	

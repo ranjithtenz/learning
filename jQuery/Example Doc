@@ -1,0 +1,52 @@
+Example: 
+
+Find all p elements that are children of a div element and apply a border to them.
+	<!DOCTYPE html>
+	<html>
+	<head>
+	  <script src="http://code.jquery.com/jquery-1.5.js"></script>
+	</head>
+	<body>
+	  <p>one</p> <div><p>two</p></div> <p>three</p>
+	<script>
+	  $("div > p").css("border", "1px solid gray");
+	</script>
+
+	</body>
+	</html>
+
+Find all inputs of type radio within the first form in the document.
+	$("input:radio", document.forms[0]);
+	
+Find all div elements within an XML document from an Ajax response.
+	$("div", xml.responseXML);
+
+Set the background color of the page to black.
+	$(document.body).css( "background", "black" );
+
+Hide all the input elements within a form.
+	$(myForm.elements).hide()
+
+Create a div element (and all of its contents) dynamically and append it to the body element. Internally, an element is created and its innerHTML property set to the given markup.
+	$("<div><p>Hello</p></div>").appendTo("body")
+
+Create some DOM elements.
+	$("<div/>", {
+	  "class": "test",
+	  text: "Click me!",
+	  click: function(){
+	    $(this).toggleClass("test");
+	  }
+	}).appendTo("body");
+
+Execute the function when the DOM is ready to be used.
+	$(function(){
+	   // Document is ready
+	 });
+
+Use both the shortcut for $(document).ready() and the argument to write failsafe jQuery code using the $ alias, without relying on the global alias.
+	jQuery(function($) {
+	    // Your code using failsafe $ alias here...
+	  });
+
+
