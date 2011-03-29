@@ -177,4 +177,81 @@ JQuery Core
 					.width, 
 					.height,
 					.offset.
-	
+		3) hover Event
+			It won`t work,
+
+			$('<div>', {
+				click: object.clickEvent,
+				hover: (object.mouseOverEvent, object.mouseOutEvent)
+			}).appendTo(containingDiv)
+			
+			It works (but Not right way)
+			
+			$('<div>', {
+				click: object.clickEvent,
+				mouseenter: object.mouseOverEvent,
+				mouseleave: object.mouseOutEvent
+			}).appendTo(containingDiv)
+			
+			Right way of doing hover
+			
+			$('<div>', {
+				click: object.clickEvent,
+				mouseover: object.mouseOverEvent,
+				mouseout: object.mouseOutEvent
+			}).appendTo(containingDiv)</div>
+			
+			var x = (fn1, fn2);
+
+			This is illegal syntax, and is what you're trying to assign to the hover property of the object.
+
+			$('<div>')
+			.click(object.clickEvent)
+			.hover(object.mouseOverEvent, object.mouseOutEvent)
+			.appendTo(containingDiv);
+			
+		4) Nested function
+			Wrong Way
+				jQuery('<div>',{
+				class : 'myclass',
+				css : {
+				"position":"absolute",
+				"left": "10px",
+				"top" : "20px",
+				"display" : "none",
+				"z-index" : "90000"
+				}
+				}).appendTo("body"); 
+
+			Right Way
+				jQuery('<div>',{
+				"class" : 'myclass',
+				"css" : {
+				"position":"absolute",
+				"left": "10px",
+				"top" : "20px",
+				"display" : "none",
+				"z-index" : "90000"
+				}
+				}).appendTo("body");</div> 
+		
+		5) Example
+				$("<div>", {
+				"class": "test",
+				text: "Click me!",
+				click: function(){
+				$(this).toggleClass("test");
+				}
+				}).appendTo("body");
+		
+		6) Class example 
+			<script>
+				$.ajax({
+				url : 'ajax.php',
+				success: function(data) {
+					$(document).ready(function(){
+					
+					});
+				}
+				});
+			</script>
